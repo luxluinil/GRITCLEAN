@@ -163,6 +163,10 @@ SP_bypassed_glitches_idxs = [];
 SP_bypassed_glitches_snrs = [];
 SP_bypassed_glitches_toadiffs = [];
 SP_bypassed_glitches_snrdiffs = [];
+SN_vetoed_glitches_idxs = [];
+SN_vetoed_glitches_snrs = [];
+SN_vetoed_glitches_toadiffs = [];
+SN_vetoed_glitches_snrdiffs = [];
 
 %Glitch params
 glitchidxs = [];
@@ -216,6 +220,12 @@ for i = 1:length(glitch_status)
             SP_bypassed_glitches_snrs = [SP_bypassed_glitches_snrs,snrs(i)];
             SP_bypassed_glitches_toadiffs = [SP_bypassed_glitches_toadiffs,toadiffs(i)];
             SP_bypassed_glitches_snrdiffs = [SP_bypassed_glitches_snrdiffs,snrdiffs(i)];
+            if glitch(2) == 3
+                SN_vetoed_glitches_idxs = [SN_vetoed_glitches_idxs,cidxs(i)];
+                SN_vetoed_glitches_snrs = [SN_vetoed_glitches_snrs,snrs(i)];
+                SN_vetoed_glitches_toadiffs = [SN_vetoed_glitches_toadiffs,toadiffs(i)];
+                SN_vetoed_glitches_snrdiffs = [SN_vetoed_glitches_snrdiffs,snrdiffs(i)];
+            end
         end
     end
 
@@ -305,14 +315,23 @@ str3 = ['Number of SP vetoed glitch events = ', num2str(SP_vetoed_glitchnum),' =
 disp(str3);
 str4 = ['Number of SP bypass glitch events = ', num2str(length(SP_bypassed_glitches_snrdiffs)),' = ',num2str(100*length(SP_bypassed_glitches_snrdiffs)/length(glitchidxs)),' % of total'];
 disp(str4);
-
+str5 = ['Number of SN vetoed glitch events = ', num2str(length(SN_vetoed_glitches_idxs)),' = ',num2str(100*length(SN_vetoed_glitches_idxs)/length(glitchidxs)),' % of total'];
+disp(str5);
+total_vetoed_glitchnum = length(SN_vetoed_glitches_idxs) + SP_vetoed_glitchnum;
+total_missed_glitchnum = length(glitchidxs) - total_vetoed_glitchnum;
+str6 = ['Total number of VETOED glitch events = ', num2str(total_vetoed_glitchnum),' out of ',num2str(length(glitchidxs)),' = ',num2str(100*total_vetoed_glitchnum/length(glitchidxs)),' % of total'];
+disp(str6);
+str6 = ['Total number of MISSED glitch events = ', num2str(total_missed_glitchnum),' out of ',num2str(length(glitchidxs)),' = ',num2str(100*total_missed_glitchnum/length(glitchidxs)),' % of total'];
+disp(str6);
 %Injected signal statistics
 numinj = 454 + 140 + 18;
-total_detected_injections = length(real_snrs) + length(low_snrs) + length(high_snrs) + length(Msun_snrs_high) + length(Msun_snrs_low) + length(Msun_snrs) + length(massgap_snrs);
+%total_detected_injections = length(real_snrs) + length(low_snrs) + length(high_snrs) + length(Msun_snrs_high) + length(Msun_snrs_low) + length(Msun_snrs) + length(massgap_snrs);
+total_detected_injections = length(real_snrs) + length(low_snrs) + length(high_snrs);
 detection_threshold_missed_siginjs = numinj - total_detected_injections;
 
 %Number of signal injections classified as glitches
-missed_signal_injections = sum(lowsnr_glitch_status(:,1)) + sum(highsnr_glitch_status(:,1)) + sum(realsnr_glitch_status(:,1)) + sum(Msun_glitch_status_high(:,1)) + sum(Msun_glitch_status(:,1)) + sum(Msun_glitch_status_low(:,1)) + sum(massgap_glitch_status(:,1));
+%missed_signal_injections = sum(lowsnr_glitch_status(:,1)) + sum(highsnr_glitch_status(:,1)) + sum(realsnr_glitch_status(:,1)) + sum(Msun_glitch_status_high(:,1)) + sum(Msun_glitch_status(:,1)) + sum(Msun_glitch_status_low(:,1)) + sum(massgap_glitch_status(:,1));
+missed_signal_injections = sum(lowsnr_glitch_status(:,1)) + sum(highsnr_glitch_status(:,1)) + sum(realsnr_glitch_status(:,1));
 str5 = ['Number of signal injections missed due to detection threshold = ',num2str(detection_threshold_missed_siginjs), ' out of ',num2str(numinj)];
 disp(str5);
 str6 = ['Number of signal injections classified as glitches = ',num2str(missed_signal_injections),' = ',num2str(100*missed_signal_injections/total_detected_injections),'% of total detected signals'];
